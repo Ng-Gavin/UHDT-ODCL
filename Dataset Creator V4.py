@@ -78,7 +78,7 @@ while (amount > 0):
     background, fext = os.path.splitext(Bfiles)
     width, height = Background.size  # will get the size of the background img
     
-    ShapeResize = ColoredShape.resize((int(135), int(135)))
+    ShapeResize = ColoredShape.resize((int(105), int(105)))
     Swidth, Sheight = ShapeResize.size
 
     target = ImageDraw.Draw(ShapeResize)
@@ -93,3 +93,4 @@ while (amount > 0):
     Background.show()
     Background.save('final/{} {} {} {} {}.jpg'.format(alphaColorSTR, letter, shapeColorSTR, Sshape, background))
     amount = amount - 1
+3
