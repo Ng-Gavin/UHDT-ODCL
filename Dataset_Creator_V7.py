@@ -46,14 +46,14 @@ shapes = []
 backgrounds = []
 
 shapeSize = 105
-alphanumSize = 80;
+alphanumSize = 70
 amount = 1
 
 #Adds all filenames into respective lists
 for Sfiles in os.listdir('Shape Plate'):
     if Sfiles.endswith('.png'):
         shapes.append(Sfiles)
-for Bfiles in os.listdir('backgroundSplit'):
+for Bfiles in os.listdir('background'):
     if Bfiles.endswith('.png'):
         backgrounds.append(Bfiles)
 
@@ -61,6 +61,10 @@ for Bfiles in os.listdir('backgroundSplit'):
 myfont = ImageFont.truetype('SourceSansPro-Black.ttf', alphanumSize)
 
 for i in range(amount):
+    background = random.choice(backgrounds)
+    Background = Image.open(f'background/{background}')
+    width, height = Background.size
+
     #Location of target in Q1
     xpos1 = random.randint(0, width/2-shapeSize)
     ypos1 = random.randint(0, height/2-shapeSize)
@@ -73,14 +77,16 @@ for i in range(amount):
     #Location of target in Q4
     xpos4 = random.randint(width/2, width-shapeSize)
     ypos4 = random.randint(height/2, height-shapeSize)
+    
+    xpos = [xpos1,xpos2,xpos3,xpos4]
+    ypos = [ypos1,ypos2,ypos3,ypos4]
 
     for tNum in range(4):
-        print("Image#:%i Target#:%i",i,tNum)
+        print("Image#:",i," Target#:",tNum)
 
         #Selects random characteristics for targets
         letter = random.choice(letters)
         shape = random.choice(shapes)
-        background = random.choice(backgrounds)
         choice1 = random.randint(0, 9)
         choice2 = random.randint(0, 9)
         while (choice1 == choice2):
@@ -93,8 +99,7 @@ for i in range(amount):
         Shape = Image.open(f'Shape Plate/{shape}')
         Sshape, fext = os.path.splitext(shape)
         
-        ShapeResize = ColoredShape.resize((int(shapeSize), int(shapeSize)))
-        Swidth, Sheight = ShapeResize.size
+        ShapeResize = Shape.resize((int(shapeSize), int(shapeSize)))
         
         im = ShapeResize.convert('RGBA')
 
@@ -109,24 +114,20 @@ for i in range(amount):
         data[..., :-1][white_areas.T] = (shapeColor)
 
         ColoredShape = Image.fromarray(data)
-        
-        Background = Image.open(f'background/{background}')
 
-    width, height = Background.size  # will get the size of the background img
+        target = ImageDraw.Draw(ColoredShape)
 
-    target = ImageDraw.Draw(ColoredShape)
+        target.text((26, 7), letter, font=myfont, fill=alphaColor)
 
-    target.text((26, 7), letter, font=myfont, fill=alphaColor)
+        Background.paste(ColoredShape, (xpos[tNum], ypos[tNum]), ColoredShape)
 
-    Background.paste(ColoredShape, (int('xpos{}'.format(tNum)), int('ypos{}'.format(tNum))), ColoredShape)
+        file_name = str(i).zfill(5)
 
-    file_name = str(i).zfill(7)
-
-    Background.save('final/images/{}.jpg'.format(file_name))
+        Background.save('final/images/{}.jpg'.format(file_name))
     
-    with open('final/labels/{}.txt'.format(file_name), 'w', encoding='utf-8') as f:
-        f.write('{} {} {} {} {}'.format(shape_to_class(Sshape),
-                                        (xpos1+53)/width,
-                                        (ypos1+53)/height,
-                                        110/width,
-                                        110/height))
+        with open('final/labels/{}.txt'.format(file_name), 'a', encoding='utf-8') as f:
+            f.write('{} {} {} {} {}\n'.format(shape_to_class(Sshape),
+                                            (xpos[tNum]+(shapeSize/2))/width,
+                                            (ypos[tNum]+(shapeSize/2))/height,
+                                            (shapeSize+1)/width,
+                                            (shapeSize+1)/height))
