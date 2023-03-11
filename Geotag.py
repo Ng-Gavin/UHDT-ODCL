@@ -68,10 +68,12 @@ def center_longitude(longitude, latitude, center_latitude, heading, x, y):
     return longitude + math.atan2(y1, x1)
 
 #constants
+
+#assuming hor_v and vert_v are in degrees
 #X-offset(corner)
-X_offset = altitude*(math.tan(hor_fov/2))
+X_offset = altitude*(math.tan((hor_fov*rad_convert)/2))
 #Y-offset(corner)
-Y_offset = altitude*(math.tan(vert_fov/2))
+Y_offset = altitude*(math.tan((vert_fov*rad_convert)/2))
 
 #dx
 dx1 = x(altitude, roll) + X_offset
