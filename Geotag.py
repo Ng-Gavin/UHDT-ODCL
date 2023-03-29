@@ -71,30 +71,51 @@ def center_longitude(longitude, latitude, center_latitude, heading, x, y):
 
 #assuming hor_v and vert_v are in degrees
 #X-offset(corner)
-X_offset = altitude*(math.tan((hor_fov*rad_convert)/2))
+def X_offset(altitude,hor_fov):
+    return altitude*(math.tan((hor_fov*rad_convert)/2))
 #Y-offset(corner)
-Y_offset = altitude*(math.tan((vert_fov*rad_convert)/2))
+def Y_offset(altitude,vert_fov):
+    return altitude*(math.tan((vert_fov*rad_convert)/2))
 
 #dx
-dx1 = x(altitude, roll) + X_offset
-dx2 = x(altitude, roll) - X_offset
-dx3 = x(altitude, roll) - X_offset
-dx4 = x(altitude, roll) + X_offset
+def dx1():
+    return x(altitude, roll) + X_offset(altitude,hor_fov)
+def dx2():
+    return x(altitude, roll) - X_offset(altitude,hor_fov)
+def dx3():
+    return x(altitude, roll) - X_offset(altitude,hor_fov)
+def dx4():
+    return x(altitude, roll) + X_offset(altitude,hor_fov)
 
 #dy
-dy1 = y(altitude, pitch) + Y_offset
-dy2 = y(altitude, pitch) + Y_offset
-dy3 = y(altitude, pitch) - Y_offset
-dy4 = y(altitude, pitch) - Y_offset
+def dy1():
+    return y(altitude, pitch) + Y_offset(altitude,vert_fov)
+def dy2(): 
+    return y(altitude, pitch) + Y_offset(altitude,vert_fov)
+def dy3(): 
+    return y(altitude, pitch) - Y_offset(altitude,vert_fov)
+def dy4(): 
+    return y(altitude, pitch) - Y_offset(altitude,vert_fov)
 
 #heading  (x and y reversed)
-hdg1 = math.atan2(dy1,dx1) + (heading*rad_convert)
-hdg2 = math.atan2(dy2,dx2) + (heading*rad_convert)
-hdg3 = math.atan2(dy3,dx3) + (heading*rad_convert)
-hdg4 = math.atan2(dy4,dx4) + (heading*rad_convert)
+def hdg1():
+    return math.atan2(dy1(y,altitude,pitch,vert_fov),dy1(y,altitude,pitch,vert_fov)) + (heading*rad_convert)
+
+def hdg2():
+    return math.atan2(dy2(y,altitude,pitch,vert_fov),dx2(x,altitude,roll,hor_fov,X_offset)) + (heading*rad_convert)
+
+def hdg3():
+    return math.atan2(dy3(y,altitude,pitch,vert_fov),dx3(x,altitude,roll,hor_fov,X_offset)) + (heading*rad_convert)
+
+def hdg4():
+    return math.atan2(dy4(y,altitude,pitch,vert_fov),dx4(x,altitude,roll,hor_fov,X_offset)) + (heading*rad_convert)
 
 #distance
-dist1 = math.pow((dx1**2)+(dy1**2),0.5)
-dist2 = math.pow((dx2**2)+(dy2**2),0.5)
-dist3 = math.pow((dx3**2)+(dy3**2),0.5)
-dist4 = math.pow((dx4**2)+(dy4**2),0.5)
+def dist1():
+    return math.pow((dx1()**2)+(dy1()**2),0.5)
+def dist2():
+    return math.pow((dx2()**2)+(dy2()**2),0.5)
+def dist3():
+    return math.pow((dx3()**2)+(dy3()**2),0.5)
+def dist4():
+    return math.pow((dx4()**2)+(dy4()**2),0.5)
