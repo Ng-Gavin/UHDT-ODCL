@@ -7,7 +7,6 @@ def x(altitude, roll):
     radians = roll * math.pi / 180
     return altitude * math.tan(radians)
 
-
 def y(altitude, pitch):
     radians = pitch * math.pi / 180
     return altitude * math.tan(radians)
