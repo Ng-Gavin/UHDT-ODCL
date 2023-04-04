@@ -1,6 +1,5 @@
 from exiftool import ExifToolHelper
 
-
 def extractMetadata(fileName):
     with ExifToolHelper() as et:
         metadata = et.get_tags(fileName, ['Comment', 'GPSLatitude', 'GPSLongitude'])[0]
