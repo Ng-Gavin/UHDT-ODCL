@@ -13,8 +13,8 @@ yaw = 1.3217555284500122  # yaw angle in degrees
 roll = -0.03365262970328331  # roll angle in degrees
 
 # Target position in image
-target_x = 4887
-target_y = 1590
+target_x = 4890
+target_y = 1580
 
 # Image parameters
 image_width = 6000
