@@ -16,3 +16,4 @@ def extractMetadata(fileName):
         return pitch, yaw, roll, drone_latitude, drone_longitude, drone_altitude, fov
 
 
+print(extractMetadata('image10(1).jpg'))

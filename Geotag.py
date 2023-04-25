@@ -73,6 +73,7 @@ def center_longitude(drone_longitude, drone_latitude, center_latitude, yaw, x, y
         math.sin(distance(x, y)/6378137)*math.cos(latitude)
     return 180 / math.pi * (-longitude + math.atan2(y1, x1))
 
+
 def geotag1(config, metadata, target_x, target_y):
     image_width, image_height, resolution = config.values()
     pitch, yaw, roll, drone_latitude, drone_longitude, drone_altitude, fov = metadata
@@ -171,6 +172,7 @@ def geotag(config, metadata, target_x, target_y):
     lat_avg = sum([lat1, lat2, lat3])/3;
     lon_avg = sum([lon1, lon2, lon3])/3;
     return lat_avg, lon_avg
+
 
 
 
