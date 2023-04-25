@@ -7,6 +7,9 @@ class Target:
         self.alphanumColor = alphanumColor
         self.alphanum = alphanum
 
+    def __str__(self):
+        return(f'shape = {self.shape}; latitude = {self.latitude}; longitude = {self.longitude}; shapecolor = {self.shapeColor}; alphcolor = {self.alphanumColor}; alphanum = {self.alphanum};')
+
 class Payload:
     def __init__(self, dock, shape, shapeColor, alphanumColor, alphanum):
         self.dock = dock
@@ -14,3 +17,6 @@ class Payload:
         self.shapeColor = shapeColor
         self.alphanumColor = alphanumColor
         self.alphanum = alphanum
+
+    def __str__(self):
+        return(f'dock = {self.dock}; shape = {self.shape}; shapecolor = {self.shapeColor}; alphcolor = {self.alphanumColor}; alphanum = {self.alphanum};')

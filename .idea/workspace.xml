@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5a9fda27-2554-4c8f-a5a2-63eb572ba28c" name="Changes" comment="">
+<<<<<<< HEAD
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Close_Enough_Test_Cases.py" beforeDir="false" afterPath="$PROJECT_DIR$/Close_Enough_Test_Cases.py" afterDir="false" />
+=======
       <change afterPath="$PROJECT_DIR$/Close_Enough_Test_Cases.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> parent of aa8cc95 (Updated close enough test cases to deal with payload assignment conflicts)
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
