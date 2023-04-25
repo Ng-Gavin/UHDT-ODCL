@@ -20,6 +20,79 @@ def class_to_shape(shape):
     return switcher.get(shape, "nothing")
 '''
 
+def compare_color(payload_color, target_color):
+    from colormath.color_objects import sRGBColor, LabColor
+    from colormath.color_conversions import convert_color
+    from deltae2000 import delta_e_cie2000
+    color1_lab = 0;
+    color2_lab = 0;
+    if (payload_color == 'RED'):
+        payload_color_rgb = sRGBColor(255, 0, 0)
+        color1_lab = convert_color(payload_color_rgb, LabColor)
+    elif (payload_color == 'ORANGE'):
+        payload_color_rgb = sRGBColor(255, 128, 0)
+        color1_lab = convert_color(payload_color_rgb, LabColor)
+    elif (payload_color == 'YELLOW'):
+        payload_color_rgb = sRGBColor(255, 255, 0)
+        color1_lab = convert_color(payload_color_rgb, LabColor)
+    elif (payload_color == 'GREEN'):
+        payload_color_rgb = sRGBColor(0, 255, 0)
+        color1_lab = convert_color(payload_color_rgb, LabColor)
+    elif (payload_color == 'BLUE'):
+        payload_color_rgb = sRGBColor(0, 0, 255)
+        color1_lab = convert_color(payload_color_rgb, LabColor)
+    elif (payload_color == 'PURPLE'):
+        payload_color_rgb = sRGBColor(128, 0, 128)
+        color1_lab = convert_color(payload_color_rgb, LabColor)
+    elif (payload_color == 'BLACK'):
+        payload_color_rgb = sRGBColor(0, 0, 0)
+        color1_lab = convert_color(payload_color_rgb, LabColor)
+    elif (payload_color == 'WHITE'):
+        payload_color_rgb = sRGBColor(255, 255, 255)
+        color1_lab = convert_color(payload_color_rgb, LabColor)
+    elif (payload_color == 'GRAY'):
+        payload_color_rgb = sRGBColor(128, 128, 128)
+        color1_lab = convert_color(payload_color_rgb, LabColor)
+    else: # Brown
+        payload_color_rgb = sRGBColor(150, 75, 0)
+        color1_lab = convert_color(payload_color_rgb, LabColor)
+
+    if (target_color == 'RED'):
+        target_color_rgb = sRGBColor(255, 0, 0)
+        color2_lab = convert_color(target_color_rgb, LabColor)
+    elif (target_color == 'ORANGE'):
+        target_color_rgb = sRGBColor(255, 128, 0)
+        color2_lab = convert_color(target_color_rgb, LabColor)
+    elif (target_color == 'YELLOW'):
+        target_color_rgb = sRGBColor(255, 255, 0)
+        color2_lab = convert_color(target_color_rgb, LabColor)
+    elif (target_color == 'GREEN'):
+        target_color_rgb = sRGBColor(0, 255, 0)
+        color2_lab = convert_color(target_color_rgb, LabColor)
+    elif (target_color == 'BLUE'):
+        target_color_rgb = sRGBColor(0, 0, 255)
+        color2_lab = convert_color(target_color_rgb, LabColor)
+    elif (target_color == 'PURPLE'):
+        target_color_rgb = sRGBColor(128, 0, 128)
+        color2_lab = convert_color(target_color_rgb, LabColor)
+    elif (target_color == 'BLACK'):
+        target_color_rgb = sRGBColor(0, 0, 0)
+        color2_lab = convert_color(target_color_rgb, LabColor)
+    elif (target_color == 'WHITE'):
+        target_color_rgb = sRGBColor(255, 255, 255)
+        color2_lab = convert_color(target_color_rgb, LabColor)
+    elif (target_color == 'GRAY'):
+        target_color_rgb = sRGBColor(128, 128, 128)
+        color2_lab = convert_color(target_color_rgb, LabColor)
+    else: # Brown
+        target_color_rgb = sRGBColor(150, 75, 0)
+        color2_lab = convert_color(target_color_rgb, LabColor)
+
+    # Finding the difference
+    diff = abs(0.001*(1000-delta_e_cie2000(color1_lab, color2_lab)))
+    return diff
+
+
 def compare(payload, target):
     #assuming shapes come in as numbers (can prob reverse the switch statement if not)
     score = 0;
@@ -29,13 +102,25 @@ def compare(payload, target):
         score += 1
     else:
         score += (1/diff)
+    #shape_color
+    if payload.shapeColor == target.shapeColor:
+        score += 1
+    else:
+        score += compare_color(payload.shapeColor, target.shapeColor)
     #alphanum color
     if payload.alphanumColor == target.alphanumColor:
         score += 1
+    else:
+        score += compare_color(payload.alphanumColor, target.alphanumColor)
     #alphanum
     if payload.alphanum == target.alphanum:
         score += 1
     return score
+
+
+
+
+
 
 def calculate_dist(drone_lat, drone_lon, target_lat, target_lon):
     dLat = (target_lat-drone_lat) * math.pi / 180
