@@ -431,6 +431,8 @@ def compare_shape(payload_shape, target_shape):
 
 
 def compare_alphanum(payload_alphanum, target_alphanum):
+    target_alphanum = target_alphanum.lower();
+    payload_alphanum = payload_alphanum.lower();
     if payload_alphanum == 'a':
         if target_alphanum == 'a':
             return 1
