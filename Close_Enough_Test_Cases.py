@@ -1,5 +1,6 @@
 import math
 
+# Compares the payload and target colors and returns a value between 0-1
 def compare_color(payload_color, target_color):
     if payload_color == target_color:
         return 1
@@ -9,6 +10,7 @@ def compare_color(payload_color, target_color):
         from deltae2000 import delta_e_cie2000
         color1_lab = 0;
         color2_lab = 0;
+        # Converts payload colors into RGB format and then into Lab Color format
         if (payload_color == 'RED'):
             payload_color_rgb = sRGBColor(255, 0, 0)
             color1_lab = convert_color(payload_color_rgb, LabColor)
@@ -40,6 +42,7 @@ def compare_color(payload_color, target_color):
             payload_color_rgb = sRGBColor(150, 75, 0)
             color1_lab = convert_color(payload_color_rgb, LabColor)
 
+        # Converts target colors into RGB format and then into Lab Color format
         if (target_color == 'RED'):
             target_color_rgb = sRGBColor(255, 0, 0)
             color2_lab = convert_color(target_color_rgb, LabColor)
@@ -71,11 +74,12 @@ def compare_color(payload_color, target_color):
             target_color_rgb = sRGBColor(150, 75, 0)
             color2_lab = convert_color(target_color_rgb, LabColor)
 
-        # Finding the difference
-        diff = abs(0.001*(1000-delta_e_cie2000(color1_lab, color2_lab)))
+        # Calculates the difference in perceived color using the Delta E 2000 color difference algorithm and normalize into a value for similarity between 0 and 1
+        similarity = abs(0.001*(1000-delta_e_cie2000(color1_lab, color2_lab)))
 
-        return diff
+        return similarity
 
+# Compares the payload shape and target shape
 def compare_shape(payload_shape, target_shape):
     if payload_shape == 'quartercircle':
         if target_shape == 'quartercircle':
@@ -3072,37 +3076,46 @@ def compare_alphanum(payload_alphanum, target_alphanum):
         elif target_alphanum == '9':
             return 1
 
+# Returns a score for the similarity between a payload and a target
 def compare(payload, target):
     score = 0;
-    #shape
+    # Scoring for shape
     score += compare_shape(payload.shape == target.shape)
-    #shape_color
+    # Scoring for shape_color
     score += compare_color(payload.shapeColor, target.shapeColor)
-    #alphanum color
+    #Scoring for alphanum color
     score += compare_color(payload.alphanumColor, target.alphanumColor)
-    #alphanum
+    #Scoring for alphanum
     score += compare_alphanum(payload.alphanum, target.alphanum)
     return score
 
 
-
+# Calculates a coefficient for the distance between the drone and a target
 def calculate_dist(drone_lat, drone_lon, target_lat, target_lon):
+    # Convert drone/target latitude/longitude into radians
     dLat = (target_lat-drone_lat) * math.pi / 180
     dLon = (target_lon-drone_lon)*math.pi/180
     lat1 = drone_lat * math.pi / 180
     lat2 = target_lat * math.pi / 180
+
+    # Calculate coefficient for distance
     a = math.sin(dLat / 2) * math.sin(dLat / 2) + math.sin(dLon / 2) * math.sin(dLon / 2) * math.cos(lat1) * math.cos(lat2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return c
 
+# Takes an array of targets and returns an array of targets sorted from closest to farthest
 def sort_targets(targets, drone_lat, drone_lon):
     sorted_targets = []
     target_order = [];
+
+    # Calculate target distance from drone
     for i in range(len(targets)):
         target_lat = targets[i]['latitude']
         target_lon = targets[i]['longitude']
         target_distance = calculate_dist(drone_lat, drone_lon, target_lat, target_lon);
         target_order.append([target_distance, i])
+
+    # Sort by target distance
     target_order.sort()
     for order in target_order:
         index = order[1]
@@ -3110,6 +3123,7 @@ def sort_targets(targets, drone_lat, drone_lon):
 
     return sorted_targets
 
+# Returns an array of payloads in the index of their corresponding target
 def order_payloads(payloads, targets):
     payload_order = []
     target_scores = []
@@ -3134,12 +3148,16 @@ def order_payloads(payloads, targets):
 
     if hasConflicts:
         for i in range(len(payload_order)):
+            # Checks if more than one target matches a payload and appends that target to a list of unassigned targets if true
             if payload_order.count(payload_order[i]) != 1:
                 unassigned_targets.append(i)
+            # Checks if more than one target matches a payload and removes that payload from the list of unassigned payloads if true
             if payload_order.count(payload_order[i]) == 1:
                 unassigned_payloads.remove(payload_order[i])
+            # Runs through all unassigned targets and assigns them an unassigned payload
             for j in range(len(unassigned_targets)):
                 payload_order[unassigned_targets[j]] = unassigned_payloads[j]
+        # Adds the index of the payload into the list containing the ordered payloads
         for payload_index in payload_order:
             ordered_payloads.append(payloads[payload_index])
     else:
@@ -3147,6 +3165,7 @@ def order_payloads(payloads, targets):
             ordered_payloads.append(payloads[payload_index])
     return ordered_payloads
 
+# Returns a list of payloads ordered in the index of its corresponding target
 def close_enough_test_cases(drone_lat, drone_lon, payloads, targets):
     sorted_targets = sort_targets(targets, drone_lat, drone_lon)
     return order_payloads(payloads, sorted_targets)
